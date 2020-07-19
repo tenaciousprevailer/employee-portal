@@ -63,11 +63,11 @@ public class EmployeeResource {
      */
     @ApiOperation(value = "Api to create an employee", response = EmployeeDTO.class)
     @ApiResponses(value = {
-                    @ApiResponse(code = 201, message = "Employee Created"),
-                    @ApiResponse(code = 400, message = "Employee Not Created, Bad Request")})
+            @ApiResponse(code = 201, message = "Employee Created"),
+            @ApiResponse(code = 400, message = "Employee Not Created, Bad Request")})
     @PostMapping("/v1/employees")
     public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) throws URISyntaxException {
-        log.debug("REST request to save Employee : {}", employeeDTO);
+        log.info("REST request to save Employee : {}", employeeDTO);
         if (employeeDTO.getId() != null) {
             throw new BadRequestException("A new employee cannot already have an ID");
         }
@@ -92,7 +92,7 @@ public class EmployeeResource {
             @ApiResponse(code = 400, message = "Employee Not Updated, Bad Request")})
     @PutMapping("/v1/employees")
     public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employeeDTO) throws URISyntaxException {
-        log.debug("REST request to update Employee : {}", employeeDTO);
+        log.info("REST request to update Employee : {}", employeeDTO);
         if (employeeDTO.getId() == null) {
             throw new BadRequestException("Invalid id");
         }
@@ -108,11 +108,11 @@ public class EmployeeResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of employees in body.
      */
-    @ApiOperation(value = "Api to fetch employees details")
+    @ApiOperation(value = "Api to fetch all employees details")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "List of Employees")})
     @GetMapping("/v1/employees")
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees(Pageable pageable) {
-        log.debug("REST request to get a page of Employees");
+        log.info("REST request to get a page of Employees");
         Page<EmployeeDTO> page = employeeService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -130,7 +130,7 @@ public class EmployeeResource {
             @ApiResponse(code = 400, message = "Employee Not Found, Resource Not Found")})
     @GetMapping("/v1/employees/{id}")
     public ResponseEntity<EmployeeDTO> getEmployee(@PathVariable String id) {
-        log.debug("REST request to get Employee : {}", id);
+        log.info("REST request to get Employee : {}", id);
         Optional<EmployeeDTO> employeeDTO = employeeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(employeeDTO);
     }
@@ -145,7 +145,7 @@ public class EmployeeResource {
     @ApiResponses(value = {@ApiResponse(code = 204, message = "Employee Deleted")})
     @DeleteMapping("/v1/employees/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable String id) {
-        log.debug("REST request to delete Employee : {}", id);
+        log.info("REST request to delete Employee : {}", id);
         employeeService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
@@ -162,9 +162,10 @@ public class EmployeeResource {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "List of employees for the query")})
     @GetMapping("/v1/_search/employees")
     public ResponseEntity<List<EmployeeDTO>> searchEmployees(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Employees for query {}", query);
+        log.info("REST request to search for a page of Employees for query {}", query);
         Page<EmployeeDTO> page = employeeService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+
 }

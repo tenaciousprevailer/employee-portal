@@ -6,8 +6,10 @@ import com.socgen.employeeportal.repository.search.EmployeeSearchRepository;
 import com.socgen.employeeportal.service.EmployeeService;
 import com.socgen.employeeportal.service.dto.EmployeeDTO;
 import com.socgen.employeeportal.service.mapper.EmployeeMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.socgen.employeeportal.util.EmployeePortalConstants;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,9 +27,8 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
  * @purpose: Societe Generale Test
  */
 @Service
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
-
-    private final Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     private final EmployeeRepository employeeRepository;
 
@@ -43,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO save(EmployeeDTO employeeDTO) {
-        log.debug("Request to save Employee : {}", employeeDTO);
+        log.info("Request to save Employee : {}", employeeDTO);
         Employee employee = employeeMapper.toEntity(employeeDTO);
         employee = employeeRepository.save(employee);
         EmployeeDTO result = employeeMapper.toDto(employee);
@@ -53,29 +54,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Page<EmployeeDTO> findAll(Pageable pageable) {
-        log.debug("Request to get all Employees");
+        log.info("Request to get all Employees");
         return employeeRepository.findAll(pageable)
                 .map(employeeMapper::toDto);
     }
 
-
+    @Cacheable(cacheNames = EmployeePortalConstants.EMPLOYEE_BY_ID_CACHE)
     @Override
     public Optional<EmployeeDTO> findOne(String id) {
-        log.debug("Request to get Employee : {}", id);
+        log.info("Request to get Employee : {}", id);
         return employeeRepository.findById(id)
                 .map(employeeMapper::toDto);
     }
 
+    @CacheEvict(cacheNames = EmployeePortalConstants.EMPLOYEE_BY_ID_CACHE)
     @Override
     public void delete(String id) {
-        log.debug("Request to delete Employee : {}", id);
+        log.info("Request to delete Employee : {}", id);
         employeeRepository.deleteById(id);
         employeeSearchRepository.deleteById(id);
     }
 
     @Override
     public Page<EmployeeDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Employees for query {}", query);
+        log.info("Request to search for a page of Employees for query {}", query);
         return employeeSearchRepository.search(queryStringQuery(query), pageable)
                 .map(employeeMapper::toDto);
     }
