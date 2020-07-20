@@ -16,6 +16,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.spring.cache.CacheConfig;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +30,20 @@ import static com.socgen.employeeportal.util.EmployeePortalConstants.*;
 @EnableCaching
 public class CacheConfiguration {
 
+    @Value("${redis.address}")
+    private String redisAddress;
+
+    @Value("${cache.ttl}")
+    private String cacheTTL;
+
+    @Value("${cache.max.idle.time}")
+    private String cacheMaxIdleTime;
+
     @Bean
     public Config getRedisConfig() {
         Config config = new Config();
         config.useSingleServer()
-                .setAddress(REDIS_ADDRESS);
+                .setAddress(redisAddress);
         return config;
     }
 
@@ -78,7 +88,8 @@ public class CacheConfiguration {
     @Bean
     public Map<String, CacheConfig> getCacheConfigMap() {
         Map<String, CacheConfig> cacheConfigMap = new HashMap<>();
-        cacheConfigMap.put(EMPLOYEE_BY_ID_CACHE, new CacheConfig(CACHE_TTL, CACHE_MAX_IDLE_TIME));
+        cacheConfigMap.put(EMPLOYEE_BY_ID_CACHE_NAME, new CacheConfig(
+                Long.valueOf(cacheTTL), Long.valueOf(cacheMaxIdleTime)));
         return cacheConfigMap;
     }
 

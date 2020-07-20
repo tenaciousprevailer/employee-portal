@@ -19,12 +19,20 @@ import java.util.Optional;
 public interface EmployeeService {
 
     /**
-     * Save a employee.
+     * Create an employee.
      *
      * @param employeeDTO the entity to save.
      * @return the persisted entity.
      */
-    EmployeeDTO save(EmployeeDTO employeeDTO);
+    EmployeeDTO create(EmployeeDTO employeeDTO);
+
+    /**
+     * Update an employee.
+     *
+     * @param employeeDTO the entity to save.
+     * @return the persisted entity.
+     */
+    EmployeeDTO update(EmployeeDTO employeeDTO);
 
     /**
      * Get all the employees.

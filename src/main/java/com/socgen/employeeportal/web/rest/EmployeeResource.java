@@ -39,7 +39,7 @@ import java.util.Optional;
  */
 @Api(value = "EmployeeResource", description = "Resource to handle Employee related operations")
 @RestController
-@RequestMapping("") // Employee Resource version1
+@RequestMapping("")
 @Slf4j
 public class EmployeeResource {
 
@@ -71,7 +71,7 @@ public class EmployeeResource {
         if (employeeDTO.getId() != null) {
             throw new BadRequestException("A new employee cannot already have an ID");
         }
-        EmployeeDTO result = employeeService.save(employeeDTO);
+        EmployeeDTO result = employeeService.create(employeeDTO);
         return ResponseEntity.created(new URI("/api/employees/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
                 .body(result);
@@ -96,7 +96,7 @@ public class EmployeeResource {
         if (employeeDTO.getId() == null) {
             throw new BadRequestException("Invalid id");
         }
-        EmployeeDTO result = employeeService.save(employeeDTO);
+        EmployeeDTO result = employeeService.update(employeeDTO);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employeeDTO.getId()))
                 .body(result);
