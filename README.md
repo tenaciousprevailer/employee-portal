@@ -17,14 +17,11 @@ Developed Employee Resource, which supports below apis:
 5. delete: Delete an existing employee
 6. search apis: Search for an employee using any field
 
-
-
-
 ## Tech Details
 Application has:
 1. MongoDb as Persistent Database
-2. Elasticsearch for searching
-3. Redis for Caching, backed by Redisson Implmentation
+2. Elasticsearch for searching , can be tested on swagger(recommended) / postman / curl
+3. Redis for Caching, backed by Redisson Implmentation (tested by introducing sleep in service layers)
 4. Swagger for API documentation : http://localhost:8080/api/swagger-ui.html 
 5. Actuator, for API health & monitoring
 
@@ -72,7 +69,9 @@ The script brings up all the required containers up using `docker-compose`
 
     Send `GET` Request to: http://localhost:8080/api/v1/employees?sort=firstName,asc
     
-
-## TODO
+    Note: `firstName` refers to the fieldName (predicate) by which the employees will get sorted
+    Also, it supports pagination, more details available on swagger: http://localhost:8080/api/swagger-ui.html 
+    
+#### TODO
 Build the application into docker image
 Create docker compose file for entire application
