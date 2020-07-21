@@ -45,7 +45,7 @@ Application has:
 6. prod environment
 
 ## How to Start application
-Invoke `./start.sh` to bring up the application.
+Invoke `./start.sh start` to bring up the application.
 The script brings up all the required containers up using `docker-compose`
 
 ## Required Use Cases (please refer swagger doc for more details):
