@@ -3,6 +3,8 @@ package com.socgen.employeeportal.domain;
 import com.socgen.employeeportal.domain.enumeration.Gender;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -41,6 +43,7 @@ public class Employee implements Serializable {
     private Gender gender;
 
     @Field("dob")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     private Date dob;
 
     @Field("departmentName")

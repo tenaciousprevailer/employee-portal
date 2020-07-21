@@ -13,4 +13,6 @@ public final class EmployeePortalConstants {
     }
 
     public static final String EMPLOYEE_BY_ID_CACHE_NAME = "employeeById";
+    public static final String EMPLOYEES_BY_PAGE_CACHE_NAME = "employeesByPage";
+    public static final String EMPLOYEES_BY_QUERY_CACHE_NAME = "employeesByQuery";
 }

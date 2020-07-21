@@ -88,8 +88,9 @@ public class CacheConfiguration {
     @Bean
     public Map<String, CacheConfig> getCacheConfigMap() {
         Map<String, CacheConfig> cacheConfigMap = new HashMap<>();
-        cacheConfigMap.put(EMPLOYEE_BY_ID_CACHE_NAME, new CacheConfig(
-                Long.valueOf(cacheTTL), Long.valueOf(cacheMaxIdleTime)));
+        cacheConfigMap.put(EMPLOYEE_BY_ID_CACHE_NAME, new CacheConfig(Long.valueOf(cacheTTL), Long.valueOf(cacheMaxIdleTime)));
+        cacheConfigMap.put(EMPLOYEES_BY_PAGE_CACHE_NAME, new CacheConfig(Long.valueOf(cacheTTL), Long.valueOf(cacheMaxIdleTime)));
+        cacheConfigMap.put(EMPLOYEES_BY_QUERY_CACHE_NAME, new CacheConfig(Long.valueOf(cacheTTL), Long.valueOf(cacheMaxIdleTime)));
         return cacheConfigMap;
     }
 

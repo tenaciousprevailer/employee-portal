@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @CachePut(cacheNames = EmployeePortalConstants.EMPLOYEE_BY_ID_CACHE_NAME, key = "#result.id")
+    @CacheEvict(cacheNames = {
+            EmployeePortalConstants.EMPLOYEES_BY_PAGE_CACHE_NAME,
+            EmployeePortalConstants.EMPLOYEES_BY_QUERY_CACHE_NAME
+    }, allEntries = true)
     @Override
     public EmployeeDTO create(EmployeeDTO employeeDTO) {
         log.info("Request to create Employee : {}", employeeDTO);
@@ -60,15 +65,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @CachePut(cacheNames = EmployeePortalConstants.EMPLOYEE_BY_ID_CACHE_NAME, key = "#employeeDTO.id")
+    @CacheEvict(cacheNames = {
+            EmployeePortalConstants.EMPLOYEES_BY_PAGE_CACHE_NAME,
+            EmployeePortalConstants.EMPLOYEES_BY_QUERY_CACHE_NAME
+    }, allEntries = true)
     @Override
     public EmployeeDTO update(EmployeeDTO employeeDTO) {
         log.info("Request to update Employee : {}", employeeDTO);
         return save(employeeDTO);
     }
 
+    @Cacheable(cacheNames = EmployeePortalConstants.EMPLOYEES_BY_PAGE_CACHE_NAME)
     @Override
     public Page<EmployeeDTO> findAll(Pageable pageable) {
         log.info("Request to get all Employees");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return employeeRepository.findAll(pageable)
                 .map(employeeMapper::toDto);
     }
@@ -81,7 +96,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(employeeMapper::toDto);
     }
 
-    @CacheEvict(cacheNames = EmployeePortalConstants.EMPLOYEE_BY_ID_CACHE_NAME)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = EmployeePortalConstants.EMPLOYEE_BY_ID_CACHE_NAME),
+            @CacheEvict(cacheNames = {
+                    EmployeePortalConstants.EMPLOYEES_BY_PAGE_CACHE_NAME,
+                    EmployeePortalConstants.EMPLOYEES_BY_QUERY_CACHE_NAME
+            }, allEntries = true)
+    })
     @Override
     public void delete(String id) {
         log.info("Request to delete Employee : {}", id);
@@ -89,9 +110,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeSearchRepository.deleteById(id);
     }
 
+    @Cacheable(cacheNames = EmployeePortalConstants.EMPLOYEES_BY_QUERY_CACHE_NAME)
     @Override
     public Page<EmployeeDTO> search(String query, Pageable pageable) {
         log.info("Request to search for a page of Employees for query {}", query);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return employeeSearchRepository.search(queryStringQuery(query), pageable)
                 .map(employeeMapper::toDto);
     }
