@@ -79,11 +79,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<EmployeeDTO> findAll(Pageable pageable) {
         log.info("Request to get all Employees");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return employeeRepository.findAll(pageable)
                 .map(employeeMapper::toDto);
     }
@@ -114,11 +114,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<EmployeeDTO> search(String query, Pageable pageable) {
         log.info("Request to search for a page of Employees for query {}", query);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         return employeeSearchRepository.search(queryStringQuery(query), pageable)
                 .map(employeeMapper::toDto);
     }
